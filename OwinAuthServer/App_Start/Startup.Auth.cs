@@ -17,16 +17,17 @@ namespace OwinAuthServer
                 //sets the URL by which the client will receive the token
                 TokenEndpointPath = new PathString("/token"),
                 Provider = new OAuthAppProvider(),
-
+                
                 //It indicates the route by which the user will be redirected for authorization.
-                AuthorizeEndpointPath = new PathString("/api/User/LogIn"),
                 AccessTokenExpireTimeSpan = TimeSpan.FromDays(2),
                 AllowInsecureHttp = true
             };
         }
         public void ConfigureAuth(IAppBuilder app)
         {
-            app.UseOAuthBearerTokens(OAuthOptions);
+            // Token Generation
+            app.UseOAuthAuthorizationServer(OAuthOptions);
+            app.UseOAuthBearerAuthentication(new OAuthBearerAuthenticationOptions());
         }
     }
 }

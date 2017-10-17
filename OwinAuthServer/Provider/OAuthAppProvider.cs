@@ -1,5 +1,6 @@
 ﻿using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.OAuth;
+using OwinAuthServer;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -19,6 +20,8 @@ namespace WebApplicationOwin.Provider
         {
             return Task.Factory.StartNew(() =>
             {
+                context.OwinContext.Response.Headers.Add("Access-Control-Allow-Origin", new[] { "*" });
+
                 var username = context.UserName;
                 var password = context.Password;
                 var userService = new UserService();
@@ -27,16 +30,17 @@ namespace WebApplicationOwin.Provider
                 {
                     var claims = new List<Claim>()
                     {
-                        new Claim(ClaimTypes.Name, user.Name),
-                        new Claim("UserID", user.Id)
+                        new Claim("UserID", user.Id.ToString()),
+                        new Claim(ClaimTypes.Name, user.Login),
+                        new Claim(ClaimTypes.Role, user.Role)
                     };
 
                     ClaimsIdentity oAutIdentity = new ClaimsIdentity(claims, Startup.OAuthOptions.AuthenticationType);
-                    context.Validated(new AuthenticationTicket(oAutIdentity, new AuthenticationProperties() { }));
+                    context.Validated(new AuthenticationTicket(oAutIdentity, new AuthenticationProperties()));
                 }
                 else
                 {
-                    context.SetError("invalid_grant", "Error");
+                    context.SetError("invalid_grant", "The user name or password is incorrect.");
                 }
             });
         }
