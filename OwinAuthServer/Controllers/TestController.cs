@@ -2,14 +2,15 @@
 
 namespace OwinAuthServer.Controllers
 {
-    [RoutePrefix("api/Test")]
+    [RoutePrefix("api/Claims")]
+    [Authorize]
     public class TestController : ApiController
     {
-        [Authorize]
+        //The user must have a token that OAuth gave him
         [Route("")]
         public IHttpActionResult Get()
         {
-            return Ok("Good result:)");
+            return Ok(ActionContext.Request.Headers.Authorization.Parameter);
         }
     }
 }

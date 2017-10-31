@@ -36,7 +36,8 @@ namespace WebApplicationOwin.Provider
                     };
 
                     ClaimsIdentity oAutIdentity = new ClaimsIdentity(claims, Startup.OAuthOptions.AuthenticationType);
-                    context.Validated(new AuthenticationTicket(oAutIdentity, new AuthenticationProperties()));
+                    var tiket = new AuthenticationTicket(oAutIdentity, new AuthenticationProperties());
+                    context.Validated(tiket);
                 }
                 else
                 {
