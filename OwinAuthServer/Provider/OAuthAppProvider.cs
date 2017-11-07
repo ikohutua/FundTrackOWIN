@@ -30,9 +30,10 @@ namespace WebApplicationOwin.Provider
                 {
                     var claims = new List<Claim>()
                     {
-                        new Claim("UserID", user.Id.ToString()),
+                        new Claim("UserId", user.Id.ToString()),
                         new Claim(ClaimTypes.Name, user.Login),
-                        new Claim(ClaimTypes.Role, user.Role)
+                        new Claim(ClaimTypes.Role, user.Role),
+                        new Claim(ClaimTypes.Email, user.Email)
                     };
 
                     ClaimsIdentity oAutIdentity = new ClaimsIdentity(claims, Startup.OAuthOptions.AuthenticationType);
