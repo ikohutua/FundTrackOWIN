@@ -6,9 +6,10 @@ using WebApplicationOwin.Models;
 
 namespace OwinAuthServer.Controllers
 {
+    [Authorize]
+    //The user must have a token that OAuth gave him
     public class ClaimsController : ApiController
     {
-        //The user must have a token that OAuth gave him
         public IHttpActionResult Get()
         {
             ClaimsPrincipal principal = RequestContext.Principal as ClaimsPrincipal;
@@ -16,13 +17,13 @@ namespace OwinAuthServer.Controllers
             {
                 return BadRequest();
             }
-            User user = new User();
-
-            user.Id = Convert.ToInt32(principal.Claims.Where(c => c.Type == "UserId").SingleOrDefault()?.Value);
-            user.Login = principal.Claims.Where(c => c.Type == ClaimTypes.Name).SingleOrDefault()?.Value;
-            user.Email = principal.Claims.Where(c => c.Type == ClaimTypes.Email).SingleOrDefault()?.Value;
-            user.Role = principal.Claims.Where(c => c.Type == ClaimTypes.Role).SingleOrDefault()?.Value;
-            
+            User user = new User
+            {
+                Id = Convert.ToInt32(principal.Claims.Where(c => c.Type == "UserId").FirstOrDefault()?.Value),
+                Login = principal.Claims.Where(c => c.Type == ClaimTypes.Name).FirstOrDefault()?.Value,
+                Email = principal.Claims.Where(c => c.Type == ClaimTypes.Email).FirstOrDefault()?.Value,
+                Role = principal.Claims.Where(c => c.Type == ClaimTypes.Role).FirstOrDefault()?.Value
+            };
 
             return Ok(user);
         }
